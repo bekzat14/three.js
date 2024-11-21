@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Yurt</title>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r136/three.min.js"></script>
+<script>
+  // Сцена, камера и рендерер
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+  const renderer = new THREE.WebGLRenderer();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.body.appendChild(renderer.domElement);
+
+  // Освещение
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+  scene.add(ambientLight);
+  const pointLight = new THREE.PointLight(0xffffff, 0.8);
+  pointLight.position.set(5, 10, 5);
+  scene.add(pointLight);
+
+  // Юрта - основа
+  const yurtGeometry = new THREE.CylinderGeometry(5, 5, 3, 32);
+  const yurtMaterial = new THREE.MeshStandardMaterial({ color: 0xdeb887, side: THREE.DoubleSide });
+  const yurt = new THREE.Mesh(yurtGeometry, yurtMaterial);
+  scene.add(yurt);
+
+  // Крыша юрты
+  const roofGeometry = new THREE.ConeGeometry(5, 2, 32);
+  const roofMaterial = new THREE.MeshStandardMaterial({ color: 0x8b4513 });
+  const roof = new THREE.Mesh(roofGeometry, roofMaterial);
+  roof.position.y = 2.5;
+  scene.add(roof);
+
+  // Пол
+  const floorGeometry = new THREE.CircleGeometry(5, 32);
+  const floorMaterial = new THREE.MeshStandardMaterial({ color: 0x8b0000 });
+  const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+  floor.rotation.x = -Math.PI / 2;
+  scene.add(floor);
+
+  // Ковры на полу
+  const carpetGeometry = new THREE.CircleGeometry(3, 32);
+  const carpetMaterial = new THREE.MeshStandardMaterial({ color: 0xff6347 });
+  const carpet = new THREE.Mesh(carpetGeometry, carpetMaterial);
+  carpet.rotation.x = -Math.PI / 2;
+  carpet.position.y = 0.01; // Легкое поднятие над полом
+  scene.add(carpet);
+
+  // Низкие столики
+  const tableGeometry = new THREE.CylinderGeometry(1, 1, 0.2, 32);
+  const tableMaterial = new THREE.MeshStandardMaterial({ color: 0x8b4513 });
+  const table = new THREE.Mesh(tableGeometry, tableMaterial);
+  table.position.set(0, 0.1, -2);
+  scene.add(table);
+
+  // Подушки
+  const cushionGeometry = new THREE.BoxGeometry(0.5, 0.2, 0.5);
+  const cushionMaterial = new THREE.MeshStandardMaterial({ color: 0xffd700 });
+  for (let i = 0; i < 6; i++) {
+    const cushion = new THREE.Mesh(cushionGeometry, cushionMaterial);
+    cushion.position.set(Math.cos(i * Math.PI / 3) * 3, 0.1, Math.sin(i * Math.PI / 3) * 3);
+    scene.add(cushion);
+  }
+
+  // Настройка камеры
+  camera.position.z = 10;
+  camera.position.y = 5;
+  camera.lookAt(0, 0, 0);
+
+  // Анимация
+  function animate() {
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
+  }
+  animate();
+</script>
+</body>
+</html>
